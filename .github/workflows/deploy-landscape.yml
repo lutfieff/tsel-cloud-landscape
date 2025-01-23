@@ -23,7 +23,7 @@ jobs:
     - name: Validate TSEL Cloud Landscape Settings
       run: |
         echo "Validating settings..."
-        tsel-cloud-landscape validate settings --settings-file settings.yml
+        landscape2 validate settings --settings-file settings.yml
 
     # Step 3: Build and Deploy TSEL Cloud Landscape
     - name: Build and Deploy TSEL Cloud Landscape
