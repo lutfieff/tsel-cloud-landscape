@@ -32,9 +32,17 @@ jobs:
     - name: Validate TSEL Cloud Landscape Settings
       run: |
         echo "Validating settings..."
-        cd ~/tsel-cloud-landscape
+        cd ~/tsel-cloud-landscape/tsel-cloud-landscape/tsel-cloud-landscape
         pwd
         landscape2 validate settings --settings-file settings.yml
+
+    # Cleanup on failure
+    - name: Cleanup Directory on Failure
+      if: failure()
+      run: |
+        echo "Cleaning up after failure..."
+        rm -rf ~/tsel-cloud-landscape
+
 
   deploy:
     needs: validate
@@ -45,7 +53,7 @@ jobs:
     - name: Build and Deploy TSEL Cloud Landscape
       run: |
         echo "Building tsel-cloud-landscape..."
-        cd ~/tsel-cloud-landscape
+        cd ~/tsel-cloud-landscape/tsel-cloud-landscape/tsel-cloud-landscape
         landscape2 build \
           --data-file data.yml \
           --settings-file settings.yml \
@@ -71,6 +79,14 @@ jobs:
           echo "Copy failed. Please check permissions and the target directory."
           exit 1
         fi
+
+# Cleanup on failure
+    - name: Cleanup Directory on Failure
+      if: failure()
+      run: |
+        echo "Cleaning up after failure..."
+        rm -rf ~/tsel-cloud-landscape
+
 
   cleanup:
     needs: deploy
