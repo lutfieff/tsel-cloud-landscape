@@ -7,34 +7,47 @@ on:
       - main        # Target branch must be 'main'
 
 jobs:
-  validate-and-deploy:
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'feat/') 
+  clone:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'feat/')
+    runs-on: self-hosted
+    outputs:
+      clone-dir: ${{ steps.clone.outputs.clone-dir }}
+
+    steps:
+    # Step 1: Clone Git Repository
+    - name: Clone Git Repository
+      id: clone
+      run: |
+        echo "Cloning repository..."
+        git clone https://github.com/lutfieff/tsel-cloud-landscape ~/tsel-cloud-landscape
+        echo "::set-output name=clone-dir::~/tsel-cloud-landscape"
+        pwd
+        ls -la ~/tsel-cloud-landscape
+
+  validate:
+    needs: clone
     runs-on: self-hosted
 
     steps:
-    # Step 1: Checkout Code
-    - name: Clone Git Repository
-      run: |
-        echo "Cloning repository..."
-        git clone https://github.com/lutfieff/tsel-cloud-landscape
-        cd ~/tsel-cloud-landscape
-        pwd
-        ls
-
     # Step 2: Validate TSEL Cloud Landscape Settings
     - name: Validate TSEL Cloud Landscape Settings
       run: |
         echo "Validating settings..."
-        cd tsel-cloud-landscape
+        cd ~/tsel-cloud-landscape
         pwd
         landscape2 validate settings --settings-file settings.yml
 
+  deploy:
+    needs: validate
+    runs-on: self-hosted
+
+    steps:
     # Step 3: Build and Deploy TSEL Cloud Landscape
     - name: Build and Deploy TSEL Cloud Landscape
       run: |
-        # Step 1: Build tsel-cloud-landscape
         echo "Building tsel-cloud-landscape..."
-        tsel-cloud-landscape build \
+        cd ~/tsel-cloud-landscape
+        landscape2 build \
           --data-file data.yml \
           --settings-file settings.yml \
           --guide-file guide.yml \
@@ -48,7 +61,6 @@ jobs:
           exit 1
         fi
 
-        # Step 2: Copy the build output to the web server directory
         TARGET_DIR="/var/www/tsel-cloud-landscape"
         echo "Copying build output to $TARGET_DIR..."
         sudo mkdir -p $TARGET_DIR
@@ -61,6 +73,11 @@ jobs:
           exit 1
         fi
 
+  cleanup:
+    needs: deploy
+    runs-on: self-hosted
+
+    steps:
     # Step 4: Cleanup Temporary Files
     - name: Cleanup Directory
       run: |
