@@ -18,11 +18,14 @@ jobs:
         echo "Cloning repository..."
         git clone https://github.com/lutfieff/tsel-cloud-landscape
         cd ~/tsel-cloud-landscape
+        pwd
+        ls
 
     # Step 2: Validate TSEL Cloud Landscape Settings
     - name: Validate TSEL Cloud Landscape Settings
       run: |
         echo "Validating settings..."
+        pwd
         landscape2 validate settings --settings-file settings.yml
 
     # Step 3: Build and Deploy TSEL Cloud Landscape
