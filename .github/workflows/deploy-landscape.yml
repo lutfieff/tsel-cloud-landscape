@@ -19,8 +19,7 @@ jobs:
       id: clone
       run: |
         echo "Cloning repository..."
-        git clone https://github.com/lutfieff/tsel-cloud-landscape ~/tsel-cloud-landscape
-        echo "::set-output name=clone-dir::~/tsel-cloud-landscape"
+        git clone https://github.com/lutfieff/tsel-cloud-landscape
         pwd
         ls -la ~/tsel-cloud-landscape
 
