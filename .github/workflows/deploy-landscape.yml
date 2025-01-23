@@ -1,42 +1,74 @@
-name: Deploy Landscape
+name: Deploy TSEL Cloud Landscape
 
 on:
-  push:
+  pull_request:
+    types: [closed] # Trigger when a pull request is closed
     branches:
-      - main  # Trigger pipeline when changes are pushed to the 'main' branch
+      - main        # Target branch must be 'main'
 
 jobs:
   validate-and-deploy:
-    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'feat/') 
+    runs-on: self-hosted
+    tags: [aws-ec2-ubuntu]  # Runner tag for your EC2 instance
 
     steps:
-    # Step 1: Checkout code
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    # Step 2: Validate Landscape Settings on AWS EC2
-    - name: Validate Landscape Settings on EC2
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }} # Private key stored in GitHub Secrets
-        EC2_USER: "ec2-user" # Replace with your EC2 username
-        EC2_HOST: ${{ secrets.EC2_PUBLIC_IP }} # EC2 Public IP from GitHub Secrets
+    # Step 1: Checkout Code
+    - name: Clone Git Repository
       run: |
-        echo "Validating settings on EC2..."
-        ssh -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" $EC2_USER@$EC2_HOST 'bash -s' << 'EOF'
-          cd ~/landscape2 || exit 1
-          echo "Running landscape2 validate..."
-          landscape2 validate settings --settings-file settings.yml
-        EOF
+        echo "Cloning repository..."
+        git clone https://github.com/lutfieff/tsel-cloud-landscape
+        cd ~/tsel-cloud-landscape
 
-    # Step 3: Deploy to AWS EC2
-    - name: Deploy to AWS EC2
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }} # Private key stored in GitHub Secrets
-        EC2_USER: "ec2-user" # Replace with your EC2 username
-        EC2_HOST: ${{ secrets.EC2_PUBLIC_IP }} # EC2 Public IP from GitHub Secrets
+    # Step 2: Validate TSEL Cloud Landscape Settings
+    - name: Validate TSEL Cloud Landscape Settings
+      working-directory: ~/tsel-cloud-landscape
       run: |
-        echo "Starting deployment to EC2..."
-        ssh -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" $EC2_USER@$EC2_HOST 'bash -s' << 'EOF'
-          echo "Running deployment on EC2..."
-          pushweb
-        EOF
+        echo "Validating settings..."
+        tsel-cloud-landscape validate settings --settings-file settings.yml
+
+    # Step 3: Build and Deploy TSEL Cloud Landscape
+    - name: Build and Deploy TSEL Cloud Landscape
+      working-directory: ~/tsel-cloud-landscape
+      run: |
+        # Step 1: Build tsel-cloud-landscape
+        echo "Building tsel-cloud-landscape..."
+        tsel-cloud-landscape build \
+          --data-file data.yml \
+          --settings-file settings.yml \
+          --guide-file guide.yml \
+          --logos-path logos \
+          --output-dir build
+
+        if [ $? -eq 0 ]; then
+          echo "Build completed successfully!"
+        else
+          echo "Build failed. Please check the error and try again."
+          exit 1
+        fi
+
+        # Step 2: Copy the build output to the web server directory
+        TARGET_DIR="/var/www/tsel-cloud-landscape"
+        echo "Copying build output to $TARGET_DIR..."
+        sudo mkdir -p $TARGET_DIR
+        sudo cp -r build/* $TARGET_DIR
+
+        if [ $? -eq 0 ]; then
+          echo "Copy completed! The result can now be accessed via the server."
+        else
+          echo "Copy failed. Please check permissions and the target directory."
+          exit 1
+        fi
+
+    # Step 4: Cleanup Temporary Files
+    - name: Cleanup Directory
+      run: |
+        echo "Cleaning up cloned directory..."
+        rm -rf ~/tsel-cloud-landscape
+
+        if [ $? -eq 0 ]; then
+          echo "Cleanup completed successfully!"
+        else
+          echo "Cleanup failed. Please check the directory permissions."
+          exit 1
+        fi
