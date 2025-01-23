@@ -68,7 +68,7 @@ jobs:
           exit 1
         fi
 
-        TARGET_DIR="/var/www/tsel-cloud-landscape"
+        TARGET_DIR="/var/www/my-landscape"
         echo "Copying build output to $TARGET_DIR..."
         sudo mkdir -p $TARGET_DIR
         sudo cp -r build/* $TARGET_DIR
