@@ -10,7 +10,6 @@ jobs:
   validate-and-deploy:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'feat/') 
     runs-on: self-hosted
-    tags: [aws-ec2-ubuntu]  # Runner tag for your EC2 instance
 
     steps:
     # Step 1: Checkout Code
