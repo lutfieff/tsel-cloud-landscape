@@ -25,6 +25,7 @@ jobs:
     - name: Validate TSEL Cloud Landscape Settings
       run: |
         echo "Validating settings..."
+        cd tsel-cloud-landscape
         pwd
         landscape2 validate settings --settings-file settings.yml
 
