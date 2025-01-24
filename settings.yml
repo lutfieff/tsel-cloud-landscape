@@ -63,6 +63,6 @@ groups:
 header:
   links:
     github: "https://github.com/cncf/landscape2"
-  logo: "cloud-landscape.png"
+  logo: "https://github.com/lutfieff/tsel-cloud-landscape/blob/main/logos/cloud-landscape.png?raw=true"
 
 screenshot_width: 1500

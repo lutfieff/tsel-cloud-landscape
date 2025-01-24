@@ -4,7 +4,7 @@
 #
 # Reference documentation: https://github.com/cncf/landscape2/blob/main/docs/config/settings.yml
 
-foundation: DEMO
+foundation: CCoE
 
 url: http://127.0.0.1:8000
 
@@ -25,14 +25,14 @@ featured_items:
         label: Adopted
   - field: maturity
     options:
-      - value: assess
+      - value: trial
         order: 2
-        label: Assess
+        label: Trial
   - field: maturity
     options:
-      - value: trial
+      - value: assess
         order: 3
-        label: Trial
+        label: Assess
 
 footer:
   links:
@@ -63,6 +63,6 @@ groups:
 header:
   links:
     github: "https://github.com/cncf/landscape2"
-  logo: "https://raw.githubusercontent.com/cncf/artwork/master/other/cncf-landscape/horizontal/color/cncf-landscape-horizontal-color.svg"
+  logo: "https://github.com/lutfieff/tsel-cloud-landscape/blob/main/logos/cloud-landscape.png?raw=true"
 
 screenshot_width: 1500
