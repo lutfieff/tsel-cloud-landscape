@@ -4,7 +4,7 @@
 #
 # Reference documentation: https://github.com/cncf/landscape2/blob/main/docs/config/settings.yml
 
-foundation: DEMO
+foundation: CCoE
 
 url: http://127.0.0.1:8000
 
@@ -20,9 +20,19 @@ colors:
 featured_items:
   - field: maturity
     options:
-      - value: graduated
+      - value: adopted
         order: 1
-        label: Graduated
+        label: Adopted
+  - field: maturity
+    options:
+      - value: trial
+        order: 2
+        label: Trial
+  - field: maturity
+    options:
+      - value: assess
+        order: 3
+        label: Assess
 
 footer:
   links:
@@ -53,6 +63,6 @@ groups:
 header:
   links:
     github: "https://github.com/cncf/landscape2"
-  logo: "https://raw.githubusercontent.com/cncf/artwork/master/other/cncf-landscape/horizontal/color/cncf-landscape-horizontal-color.svg"
+  logo: "cloud-landscape.png"
 
 screenshot_width: 1500

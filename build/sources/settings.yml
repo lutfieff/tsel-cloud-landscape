@@ -20,9 +20,19 @@ colors:
 featured_items:
   - field: maturity
     options:
-      - value: graduated
+      - value: adopted
         order: 1
-        label: Graduated
+        label: Adopted
+  - field: maturity
+    options:
+      - value: assess
+        order: 2
+        label: Assess
+  - field: maturity
+    options:
+      - value: trial
+        order: 3
+        label: Trial
 
 footer:
   links:

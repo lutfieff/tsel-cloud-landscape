@@ -14,7 +14,7 @@ categories:
             description: This is the description of item 1
             homepage_url: https://cncf.io
             logo: cncf.svg
-            project: graduated
+            project: adopted
             repo_url: https://github.com/cncf/landscape2
             twitter: https://twitter.com/CloudNativeFdn
           - name: Item 2
@@ -22,13 +22,14 @@ categories:
             description: This is the description of item 2
             homepage_url: https://cncf.io
             logo: cncf.svg
-            project: sandbox
+            project: trial
             repo_url: https://github.com/cncf/landscape2
             twitter: https://twitter.com/CloudNativeFdn
           - name: Item 3
             description: This is the description of item 3
             homepage_url: https://cncf.io
             logo: cncf.svg
+            project: assess
       - name: Subcategory 1-2
         items:
           - name: Item 4
